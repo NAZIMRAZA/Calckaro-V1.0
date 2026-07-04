@@ -30,6 +30,14 @@ const {
     <link rel="icon" href="/favicon.ico" />
     
     <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      const theme = localStorage.getItem('theme') || 'dark';
+      if (theme === 'light') {
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.remove('light');
+      }
+    </script>
   </head>
   <body class="h-full flex flex-col justify-between bg-vercel-black text-white selection:bg-vercel-blue selection:text-white">
     <!-- Header -->
@@ -52,16 +60,25 @@ const {
         </div>
 
         <!-- Right navigation / search placeholder -->
-        <div class="flex items-center gap-4">
-          <div class="relative w-48 sm:w-64">
+        <div class="flex items-center gap-3">
+          <div class="relative w-40 sm:w-48">
             <input 
               type="text" 
-              placeholder="Search calculators..." 
+              placeholder="Search..." 
               disabled
               class="w-full rounded-xs border border-vercel-gray-medium bg-vercel-gray-dark px-3 py-1.5 text-xs text-ink-muted outline-none transition-all placeholder:text-ink-faint focus:border-vercel-blue"
             />
-            <span class="absolute right-3 top-2.5 text-[10px] font-mono text-ink-faint">Ctrl K</span>
           </div>
+          
+          <!-- Theme Toggle -->
+          <button id="theme-toggle" class="p-1.5 rounded-xs border border-vercel-gray-medium bg-vercel-gray-dark text-ink-muted hover:text-white transition-colors cursor-pointer" aria-label="Toggle theme">
+            <svg id="theme-toggle-sun" class="w-3.5 h-3.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+            </svg>
+            <svg id="theme-toggle-moon" class="w-3.5 h-3.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
         </div>
       </div>
     </header>
@@ -88,5 +105,30 @@ const {
         </div>
       </div>
     </footer>
+    <script>
+      const toggleBtn = document.getElementById('theme-toggle');
+      const sunIcon = document.getElementById('theme-toggle-sun');
+      const moonIcon = document.getElementById('theme-toggle-moon');
+
+      function updateThemeIcons() {
+        const isLight = document.documentElement.classList.contains('light');
+        if (isLight) {
+          sunIcon?.classList.remove('hidden');
+          moonIcon?.classList.add('hidden');
+        } else {
+          sunIcon?.classList.add('hidden');
+          moonIcon?.classList.remove('hidden');
+        }
+      }
+
+      toggleBtn?.addEventListener('click', () => {
+        const isLight = document.documentElement.classList.toggle('light');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        updateThemeIcons();
+      });
+
+      // Initial update
+      updateThemeIcons();
+    </script>
   </body>
 </html>
