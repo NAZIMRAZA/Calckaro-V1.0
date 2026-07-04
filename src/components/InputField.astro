@@ -1,0 +1,83 @@
+---
+interface Props {
+  id: string;
+  label: string;
+  type?: 'number' | 'text' | 'select' | 'checkbox';
+  value?: string | number;
+  placeholder?: string;
+  prefix?: string;
+  suffix?: string;
+  options?: { value: string; label: string }[];
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+const {
+  id,
+  label,
+  type = 'number',
+  value,
+  placeholder,
+  prefix,
+  suffix,
+  options = [],
+  min,
+  max,
+  step = 1
+} = Astro.props;
+---
+
+<div class="space-y-1.5 w-full">
+  <label for={id} class="block text-xs font-semibold text-white tracking-wide">
+    {label}
+  </label>
+  
+  <div class="relative flex items-center w-full">
+    <!-- Prefix -->
+    {prefix && (
+      <span class="absolute left-3 text-xs text-ink-faint font-mono select-none">
+        {prefix}
+      </span>
+    )}
+
+    {type === 'select' ? (
+      <select
+        id={id}
+        name={id}
+        class="w-full rounded-xs border border-vercel-gray-medium bg-vercel-gray-dark py-2 px-3 text-xs text-white outline-none transition-all focus:border-vercel-blue"
+      >
+        {options.map(opt => (
+          <option value={opt.value} selected={value === opt.value}>{opt.label}</option>
+        ))}
+      </select>
+    ) : type === 'checkbox' ? (
+      <input
+        type="checkbox"
+        id={id}
+        name={id}
+        checked={!!value}
+        class="h-4 w-4 rounded-xs border-vercel-gray-medium bg-vercel-gray-dark text-vercel-blue focus:ring-vercel-blue"
+      />
+    ) : (
+      <input
+        type={type}
+        id={id}
+        name={id}
+        value={value}
+        placeholder={placeholder}
+        min={min}
+        max={max}
+        step={step}
+        class={`w-full rounded-xs border border-vercel-gray-medium bg-vercel-gray-dark py-2 text-xs text-white outline-none transition-all focus:border-vercel-blue ${prefix ? 'pl-8' : 'pl-3'} ${suffix ? 'pr-12' : 'pr-3'}`}
+      />
+    )}
+
+    <!-- Suffix -->
+    {suffix && (
+      <span class="absolute right-3 text-[10px] text-ink-faint font-mono select-none">
+        {suffix}
+      </span>
+    )}
+  </div>
+</div>

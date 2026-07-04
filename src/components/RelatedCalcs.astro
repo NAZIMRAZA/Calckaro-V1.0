@@ -1,0 +1,33 @@
+---
+import calculators from '../data/calculators.json';
+
+interface Props {
+  relatedSlugs: string[];
+}
+
+const { relatedSlugs } = Astro.props;
+
+// Filter matching calculators based on relatedSlugs
+const relatedList = calculators.filter(calc => relatedSlugs.includes(calc.slug));
+---
+
+{relatedList.length > 0 && (
+  <div class="mt-12 border-t border-vercel-gray-medium pt-8">
+    <h3 class="text-lg font-bold text-white mb-4">Related Calculators</h3>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {relatedList.map(calc => (
+        <a 
+          href={`/${calc.slug}`} 
+          class="group block p-4 rounded-xs border border-vercel-gray-medium bg-vercel-gray-dark hover:border-vercel-blue hover:bg-vercel-gray-medium transition-all"
+        >
+          <div class="text-sm font-semibold text-white group-hover:text-vercel-blue transition-colors">
+            {calc.name}
+          </div>
+          <p class="text-xs text-ink-muted mt-1 line-clamp-2">
+            {calc.metaDescription}
+          </p>
+        </a>
+      ))}
+    </div>
+  </div>
+)}

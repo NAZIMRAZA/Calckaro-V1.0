@@ -1,0 +1,281 @@
+[
+  {
+    "slug": "notice-period-calculator",
+    "name": "Notice Period Buyout vs. Serve Calculator",
+    "category": "salaried-professional",
+    "h1": "Notice Period Buyout vs. Serve Calculator",
+    "metaTitle": "Notice Period Buyout vs. Serve Calculator — CalcKaro",
+    "metaDescription": "Calculate whether you should buy out your notice period or serve it. Compare employee buyout costs and company payout differences in India.",
+    "faqs": [
+      {
+        "question": "What is notice period buyout in India?",
+        "answer": "Notice period buyout occurs when an employer or employee pays a sum equivalent to the gross salary of the unserved notice period days to terminate employment immediately."
+      },
+      {
+        "question": "Is notice period buyout taxable?",
+        "answer": "Yes, any notice period buyout amount paid or received is generally taxable as salary under Section 17 of the Income Tax Act in India."
+      },
+      {
+        "question": "How is notice period buyout calculated?",
+        "answer": "It is calculated by multiplying your daily gross salary (monthly gross salary divided by 30 or actual working days) by the number of unserved notice period days."
+      },
+      {
+        "question": "Can an employer refuse a notice period buyout?",
+        "answer": "Yes, unless specified in the employment agreement, an employer has the right to refuse a buyout and request the employee to serve the full notice period."
+      }
+    ],
+    "relatedSlugs": [
+      "gst-tds-calculator",
+      "salary-calculator",
+      "notice-period-salary-calculator"
+    ]
+  },
+  {
+    "slug": "gst-tds-calculator",
+    "name": "GST + TDS Net Payout Calculator for Freelancers",
+    "category": "salaried-professional",
+    "h1": "GST + TDS Net Payout Calculator",
+    "metaTitle": "GST + TDS Net Payout Calculator for Freelancers — CalcKaro",
+    "metaDescription": "Easily calculate your net take-home earnings as an Indian freelancer after adding GST and deducting TDS (Sec 194J / 194C).",
+    "faqs": [
+      {
+        "question": "What is the TDS rate for professional services in India?",
+        "answer": "Under Section 194J, the TDS rate is 10% for professional fees and technical services. It is 2% under Section 194C for contracts."
+      },
+      {
+        "question": "Do I have to charge GST as a freelancer in India?",
+        "answer": "You must register and charge GST (usually 18% for services) if your annual aggregate turnover exceeds ₹20 Lakhs (₹10 Lakhs for special category states)."
+      },
+      {
+        "question": "Is TDS deducted on the GST component?",
+        "answer": "No, according to CBDT circulars, TDS is deducted only on the basic value of the services rendered, excluding the GST component."
+      },
+      {
+        "question": "Can I claim a refund for deducted TDS?",
+        "answer": "Yes, if your final annual tax liability is lower than the total TDS deducted, you can claim a refund by filing your Income Tax Return (ITR)."
+      }
+    ],
+    "relatedSlugs": [
+      "salary-calculator",
+      "hra-calculator",
+      "annual-tax-calculator"
+    ]
+  },
+  {
+    "slug": "salary-calculator",
+    "name": "In-hand Salary Calculator (CTC to Take-home)",
+    "category": "salaried-professional",
+    "h1": "In-hand Salary Calculator (CTC to Take-home)",
+    "metaTitle": "In-hand Salary Calculator (CTC to Take-home) — CalcKaro",
+    "metaDescription": "Calculate your monthly in-hand salary from your CTC in India. Computes deductions like EPF, Gratuity, Professional Tax, and Income Tax.",
+    "faqs": [
+      {
+        "question": "What is the difference between CTC and In-hand salary?",
+        "answer": "CTC (Cost to Company) includes all direct and indirect expenses spent on an employee. In-hand salary is the actual amount credited to your bank account after deductions like EPF, Professional Tax, and Income Tax."
+      },
+      {
+        "question": "Is EPF deduction mandatory?",
+        "answer": "Yes, for organizations with 20 or more employees, a deduction of 12% of basic salary towards EPF is mandatory for employees earning up to ₹15,000 per month."
+      },
+      {
+        "question": "What is Professional Tax in India?",
+        "answer": "Professional Tax is a state-level tax levied on salaried individuals. It varies by state but is capped at a maximum of ₹2,500 per financial year."
+      },
+      {
+        "question": "How is taxable income calculated from CTC?",
+        "answer": "Taxable income is calculated by subtracting tax-exempt allowances (like HRA, LTA) and standard deductions from your gross salary."
+      }
+    ],
+    "relatedSlugs": [
+      "hra-calculator",
+      "gratuity-calculator",
+      "old-vs-new-tax-regime-calculator"
+    ]
+  },
+  {
+    "slug": "hra-calculator",
+    "name": "HRA Exemption Calculator",
+    "category": "salaried-professional",
+    "h1": "HRA Exemption Calculator",
+    "metaTitle": "HRA Exemption Calculator — CalcKaro",
+    "metaDescription": "Check your HRA tax exemption under Section 10(13A). Estimate how much tax you save based on your basic salary, rent paid, and city type.",
+    "faqs": [
+      {
+        "question": "How is HRA tax exemption calculated in India?",
+        "answer": "HRA exemption is the minimum of three amounts: (1) Actual HRA received, (2) 50% of basic salary (for metro cities) or 40% (for non-metro cities), or (3) Rent paid minus 10% of basic salary."
+      },
+      {
+        "question": "Can I claim both HRA and home loan tax benefits?",
+        "answer": "Yes, if you live in a rented house and pay rent while also paying home loan EMI for a property located in a different city or not yet occupied."
+      },
+      {
+        "question": "Do I need a landlord's PAN to claim HRA exemption?",
+        "answer": "Yes, providing your landlord's PAN is mandatory if the annual rent paid exceeds ₹1,00,000."
+      },
+      {
+        "question": "What cities qualify for 50% HRA in India?",
+        "answer": "Only four metro cities qualify for the 50% basic salary rule: Delhi, Mumbai, Kolkata, and Chennai. Other major hubs like Bengaluru or Hyderabad qualify for 40%."
+      }
+    ],
+    "relatedSlugs": [
+      "salary-calculator",
+      "old-vs-new-tax-regime-calculator",
+      "annual-tax-calculator"
+    ]
+  },
+  {
+    "slug": "old-vs-new-tax-regime-calculator",
+    "name": "Old vs. New Tax Regime Comparison Calculator",
+    "category": "salaried-professional",
+    "h1": "Old vs. New Tax Regime Comparison",
+    "metaTitle": "Old vs. New Tax Regime Comparison Calculator — CalcKaro",
+    "metaDescription": "Compare your tax liability under the Old and New tax regimes for FY 2025-26 (AY 2026-27). Find the best regime to maximize your savings.",
+    "faqs": [
+      {
+        "question": "Which tax regime is better: Old or New?",
+        "answer": "The New Regime is better if you have few deductions. The Old Regime is usually better if you make substantial tax-saving investments under Section 80C, 80D, and HRA."
+      },
+      {
+        "question": "What is the standard deduction in the New Tax Regime?",
+        "answer": "For salaried individuals, the standard deduction is ₹75,000 under the New Tax Regime (increased from ₹50,000 in recent budgets)."
+      },
+      {
+        "question": "Can I switch between Old and New regimes every year?",
+        "answer": "Salaried individuals can choose between the regimes every year when filing ITR, whereas business owners can only switch once in a lifetime."
+      },
+      {
+        "question": "Is HRA deduction available in the New Tax Regime?",
+        "answer": "No, HRA exemption is not available under the New Tax Regime. You must opt for the Old Regime to claim HRA."
+      }
+    ],
+    "relatedSlugs": [
+      "salary-calculator",
+      "hra-calculator",
+      "annual-tax-calculator"
+    ]
+  },
+  {
+    "slug": "gratuity-calculator",
+    "name": "Gratuity Calculator (Payment of Gratuity Act)",
+    "category": "salaried-professional",
+    "h1": "Gratuity Calculator",
+    "metaTitle": "Gratuity Calculator (Payment of Gratuity Act) — CalcKaro",
+    "metaDescription": "Estimate your gratuity payment in India based on the Payment of Gratuity Act, 1972. Inputs: years of service and last drawn basic salary.",
+    "faqs": [
+      {
+        "question": "Who is eligible for gratuity in India?",
+        "answer": "An employee is eligible for gratuity after completing at least 5 years of continuous service with an organization that has 10 or more employees."
+      },
+      {
+        "question": "What is the formula for calculating gratuity?",
+        "answer": "The gratuity formula is: (Last drawn Basic Salary + DA) * (15 / 26) * Number of completed years of service."
+      },
+      {
+        "question": "Is gratuity taxable in India?",
+        "answer": "Gratuity received by government employees is fully tax-exempt. For private-sector employees covered by the Act, it is tax-exempt up to a limit of ₹25 Lakhs."
+      },
+      {
+        "question": "Can gratuity be paid before 5 years?",
+        "answer": "The 5-year requirement is waived only in the unfortunate event of the employee's death or disablement due to an accident or disease."
+      }
+    ],
+    "relatedSlugs": [
+      "salary-calculator",
+      "epf-calculator",
+      "notice-period-calculator"
+    ]
+  },
+  {
+    "slug": "epf-calculator",
+    "name": "EPF/PF Maturity & Withdrawal Calculator",
+    "category": "salaried-professional",
+    "h1": "EPF/PF Maturity & Withdrawal Calculator",
+    "metaTitle": "EPF/PF Maturity & Withdrawal Calculator — CalcKaro",
+    "metaDescription": "Calculate your Employee Provident Fund (EPF) maturity amount, interest accumulated, and estimate withdrawal rules and caps.",
+    "faqs": [
+      {
+        "question": "What is the current EPF interest rate in India?",
+        "answer": "The EPF interest rate is determined annually by the EPFO. For recent financial years, the interest rate stands around 8.15% to 8.25%."
+      },
+      {
+        "question": "How much do the employee and employer contribute to EPF?",
+        "answer": "Both contribute 12% of the basic salary. The employee's 12% goes fully to the EPF. The employer's contribution is split: 8.33% to EPS (Pension) and 3.67% to EPF."
+      },
+      {
+        "question": "Is EPF withdrawal taxable?",
+        "answer": "EPF withdrawals are fully tax-free if the employee completes 5 years of continuous service. Withdrawals before 5 years attract TDS unless specific criteria are met."
+      },
+      {
+        "question": "When can I withdraw my full EPF amount?",
+        "answer": "You can withdraw the full amount upon retirement or if you remain unemployed for more than 2 months after leaving a job."
+      }
+    ],
+    "relatedSlugs": [
+      "salary-calculator",
+      "gratuity-calculator",
+      "hra-calculator"
+    ]
+  },
+  {
+    "slug": "notice-period-salary-calculator",
+    "name": "Notice Period Salary Calculator",
+    "category": "salaried-professional",
+    "h1": "Notice Period Salary Calculator",
+    "metaTitle": "Notice Period Salary Calculator (Pay During Notice) — CalcKaro",
+    "metaDescription": "Calculate the exact salary payout you will receive during your notice period, adjusting for holidays, unserved days, and local deductions.",
+    "faqs": [
+      {
+        "question": "How is salary calculated for notice period days?",
+        "answer": "Notice period salary is calculated using pro-rata values: (Gross Monthly Salary / Number of days in the month) multiplied by the actual days served."
+      },
+      {
+        "question": "Do I get full salary during the notice period?",
+        "answer": "Yes, you are entitled to your full monthly salary, including basic pay and allowances, for the days you actually serve during your notice period."
+      },
+      {
+        "question": "Are deductions like EPF still applicable during notice period?",
+        "answer": "Yes, statutory deductions like EPF and Professional Tax are deducted from your notice period salary just like regular months."
+      },
+      {
+        "question": "What happens if I take leaves during the notice period?",
+        "answer": "Organization policies differ, but leaves during notice period can extend your last working day or result in loss-of-pay (LOP) salary deductions."
+      }
+    ],
+    "relatedSlugs": [
+      "notice-period-calculator",
+      "salary-calculator",
+      "annual-tax-calculator"
+    ]
+  },
+  {
+    "slug": "annual-tax-calculator",
+    "name": "Annual Tax Liability Estimator (Form 16 Cross-Check)",
+    "category": "salaried-professional",
+    "h1": "Annual Tax Liability Estimator",
+    "metaTitle": "Annual Tax Liability Estimator (Form 16 Cross-Check) — CalcKaro",
+    "metaDescription": "Quickly check your annual tax liability and verify your Form 16 details. Validate deductions, surcharge, cess, and rebates easily.",
+    "faqs": [
+      {
+        "question": "What is Form 16 in India?",
+        "answer": "Form 16 is a certificate issued by your employer detailing the total salary paid to you and the TDS deducted and deposited with the government during the fiscal year."
+      },
+      {
+        "question": "Why should I cross-check my Form 16?",
+        "answer": "Cross-checking helps detect errors in deductions, mismatch in TDS entries (Form 26AS), or verify if all declarations (80C, HRA) were processed correctly."
+      },
+      {
+        "question": "What is the tax rebate under Section 87A?",
+        "answer": "Under Section 87A, individuals with taxable income up to ₹7 Lakhs in the New Regime get a full tax rebate, making their tax liability zero. In the Old Regime, the rebate applies up to ₹5 Lakhs."
+      },
+      {
+        "question": "What is Health and Education Cess in India?",
+        "answer": "It is an additional tax of 4% levied on the total income tax amount calculated before surcharge to support government education and health initiatives."
+      }
+    ],
+    "relatedSlugs": [
+      "old-vs-new-tax-regime-calculator",
+      "salary-calculator",
+      "hra-calculator"
+    ]
+  }
+]

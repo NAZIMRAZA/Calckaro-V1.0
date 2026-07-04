@@ -1,0 +1,123 @@
+---
+import InputField from '../InputField.astro';
+---
+
+<div class="lg:col-span-6 space-y-6">
+  <!-- Inputs -->
+  <InputField id="grossSalary" label="Monthly Gross Salary" prefix="₹" value={150000} type="number" />
+  <InputField id="requiredDays" label="Notice Period Required (Days)" value={90} suffix="days" type="number" />
+  <InputField id="servedDays" label="Notice Period Served (Days)" value={30} suffix="days" type="number" />
+  
+  <InputField 
+    id="buyoutPayer" 
+    label="Who is buying out the notice period?" 
+    type="select" 
+    value="employee"
+    options={[
+      { value: 'employee', label: 'Employee (You pay company)' },
+      { value: 'employer', label: 'Employer (Company pays you)' }
+    ]} 
+  />
+</div>
+
+<!-- Outputs -->
+<div class="lg:col-span-6 border border-vercel-gray-medium bg-vercel-gray-dark rounded-xs p-6 space-y-6">
+  <div>
+    <h3 class="text-xs uppercase tracking-wider text-ink-faint">Net Buyout Payout</h3>
+    <div id="result-amount" class="text-4xl font-extrabold text-white font-mono mt-1 select-all">₹3,00,000</div>
+    <div id="result-payer" class="text-xs text-ink-muted mt-1">Amount you owe your employer</div>
+  </div>
+  
+  <div class="border-t border-vercel-gray-medium pt-4 space-y-3 text-xs">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Unserved Notice Days</span>
+      <span id="result-unserved" class="text-white font-mono">60 days</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Daily Pro-rata Rate</span>
+      <span id="result-daily-rate" class="text-white font-mono">₹5,000 / day</span>
+    </div>
+  </div>
+
+  <div class="pt-2">
+    <button 
+      id="copy-btn" 
+      class="w-full py-2 px-4 rounded-xs border border-vercel-gray-light bg-vercel-gray-medium text-xs font-semibold text-white hover:bg-vercel-gray-light hover:border-white transition-all cursor-pointer"
+    >
+      Copy Result
+    </button>
+  </div>
+</div>
+
+<script>
+  import { calculateNoticePeriod } from '../CalcLogic/notice-period';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'decimal',
+    maximumFractionDigits: 0
+  });
+
+  const formatINR = (val: number) => `₹${formatter.format(val)}`;
+
+  // Bind elements
+  const grossSalaryInput = document.getElementById('grossSalary') as HTMLInputElement;
+  const requiredDaysInput = document.getElementById('requiredDays') as HTMLInputElement;
+  const servedDaysInput = document.getElementById('servedDays') as HTMLInputElement;
+  const buyoutPayerInput = document.getElementById('buyoutPayer') as HTMLSelectElement;
+
+  const resultAmount = document.getElementById('result-amount') as HTMLDivElement;
+  const resultPayer = document.getElementById('result-payer') as HTMLDivElement;
+  const resultUnserved = document.getElementById('result-unserved') as HTMLSpanElement;
+  const resultDailyRate = document.getElementById('result-daily-rate') as HTMLSpanElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+
+  function updateCalculations() {
+    if (!grossSalaryInput || !requiredDaysInput || !servedDaysInput || !buyoutPayerInput) return;
+
+    const grossSalary = parseFloat(grossSalaryInput.value) || 0;
+    const requiredDays = parseFloat(requiredDaysInput.value) || 0;
+    const servedDays = parseFloat(servedDaysInput.value) || 0;
+    const buyoutPayer = buyoutPayerInput.value as 'employee' | 'employer';
+
+    const result = calculateNoticePeriod({
+      grossSalary,
+      requiredDays,
+      servedDays,
+      buyoutPayer
+    });
+
+    // Update DOM
+    if (resultAmount) resultAmount.textContent = formatINR(result.buyoutAmount);
+    if (resultPayer) resultPayer.textContent = result.payerLabel;
+    if (resultUnserved) resultUnserved.textContent = `${result.unservedDays} days`;
+    if (resultDailyRate) resultDailyRate.textContent = `${formatINR(result.dailyRate)} / day`;
+  }
+
+  // Bind event listeners for real-time reactivity
+  [grossSalaryInput, requiredDaysInput, servedDaysInput, buyoutPayerInput].forEach(el => {
+    if (el) {
+      el.addEventListener('input', updateCalculations);
+      el.addEventListener('change', updateCalculations);
+    }
+  });
+
+  // Copy result action
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      if (resultAmount && resultAmount.textContent) {
+        navigator.clipboard.writeText(resultAmount.textContent).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('border-vercel-blue');
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.classList.remove('border-vercel-blue');
+          }, 1500);
+        });
+      }
+    });
+  }
+
+  // Run initial calculation
+  updateCalculations();
+</script>

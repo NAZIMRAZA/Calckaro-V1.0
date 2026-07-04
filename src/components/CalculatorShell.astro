@@ -1,0 +1,176 @@
+---
+import RelatedCalcs from './RelatedCalcs.astro';
+import AdSlot from './AdSlot.astro';
+
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  slug: string;
+  name: string;
+  category: string;
+  h1: string;
+  metaDescription: string;
+  faqs: FAQItem[];
+  relatedSlugs: string[];
+  
+  // Formula & Explanations
+  formulaText: string;
+  formulaVariables: { name: string; description: string }[];
+  
+  // Steps to use
+  steps: string[];
+}
+
+const {
+  slug,
+  name,
+  category,
+  h1,
+  metaDescription,
+  faqs = [],
+  relatedSlugs = [],
+  formulaText,
+  formulaVariables = [],
+  steps = []
+} = Astro.props;
+
+// Formatting Category label
+const categoryLabel = category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+// Schema.org Structured Data
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://calckaro.com"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": categoryLabel,
+      "item": `https://calckaro.com/category/${category}`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": name,
+      "item": `https://calckaro.com/${slug}`
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": name,
+  "url": `https://calckaro.com/${slug}`,
+  "description": metaDescription,
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "All"
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+---
+
+<!-- Structured Data Injection -->
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} />
+{faqs.length > 0 && (
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+)}
+
+<div class="space-y-8">
+  <!-- Breadcrumbs -->
+  <nav class="text-xs text-ink-muted flex gap-2 items-center">
+    <a href="/" class="hover:text-white transition-colors">Home</a>
+    <span>/</span>
+    <a href={`/category/${category}`} class="hover:text-white transition-colors">{categoryLabel}</a>
+    <span>/</span>
+    <span class="text-white truncate max-w-[200px]">{name}</span>
+  </nav>
+
+  <!-- Title Section -->
+  <div class="border-b border-vercel-gray-medium pb-4">
+    <h1 class="text-2xl font-extrabold sm:text-3xl text-white font-sans tracking-tight">
+      {h1}
+    </h1>
+    <p class="text-sm text-ink-muted mt-2">
+      {metaDescription}
+    </p>
+  </div>
+
+  <!-- Main Calculator Slot (Inputs / Outputs) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <slot />
+  </div>
+
+  <!-- Formula & How it Works -->
+  {formulaText && (
+    <section class="border-t border-vercel-gray-medium pt-8 mt-12 space-y-4">
+      <h2 class="text-lg font-bold text-white">Formula & Calculation</h2>
+      <div class="bg-vercel-gray-dark border border-vercel-gray-medium p-4 rounded-xs font-mono text-sm text-vercel-blue select-all overflow-x-auto">
+        <code>{formulaText}</code>
+      </div>
+      {formulaVariables.length > 0 && (
+        <ul class="space-y-2 text-xs text-ink-muted">
+          {formulaVariables.map(v => (
+            <li>
+              <strong class="text-white font-mono">{v.name}</strong>: {v.description}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )}
+
+  <!-- How to Use -->
+  {steps.length > 0 && (
+    <section class="border-t border-vercel-gray-medium pt-8 space-y-4">
+      <h2 class="text-lg font-bold text-white">How to Use</h2>
+      <ol class="list-decimal list-inside space-y-2 text-xs text-ink-muted">
+        {steps.map(step => (
+          <li>{step}</li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  <!-- FAQ Section (AEO Optimized) -->
+  {faqs.length > 0 && (
+    <section class="border-t border-vercel-gray-medium pt-8 space-y-6">
+      <h2 class="text-lg font-bold text-white">Frequently Asked Questions</h2>
+      <div class="space-y-6">
+        {faqs.map(faq => (
+          <div class="space-y-2">
+            <h3 class="text-sm font-semibold text-white">{faq.question}</h3>
+            <p class="text-xs text-ink-muted leading-relaxed">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- AdSense Slot (Between FAQ and Related) -->
+  <AdSlot slotId={`ad-${slug}`} />
+
+  <!-- Related Calculators -->
+  <RelatedCalcs relatedSlugs={relatedSlugs} />
+</div>

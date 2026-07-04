@@ -1,0 +1,26 @@
+---
+interface Props {
+  slotId?: string;
+  adClient?: string;
+}
+
+const { slotId = "default-slot", adClient = "ca-pub-placeholder" } = Astro.props;
+---
+
+<div class="my-8 w-full border border-vercel-gray-medium bg-vercel-gray-dark rounded-xs p-4 flex flex-col items-center justify-center min-h-[90px] text-xs text-ink-muted select-none">
+  <span class="text-[9px] uppercase tracking-wider text-ink-faint mb-1">Advertisement</span>
+  <!-- Placeholder or script tag for Google AdSense -->
+  <ins class="adsbygoogle"
+       style="display:block; text-align:center;"
+       data-ad-layout="in-article"
+       data-ad-format="fluid"
+       data-ad-client={adClient}
+       data-ad-slot={slotId}>
+  </ins>
+  <div class="font-mono text-ink-faint">AdSlot ID: {slotId}</div>
+</div>
+
+<script is:inline>
+  // Async initialization of AdSense
+  (window.adsbygoogle = window.adsbygoogle || []).push({});
+</script>
