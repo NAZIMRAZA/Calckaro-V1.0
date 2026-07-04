@@ -223,11 +223,11 @@ Use these core design tokens from `DESIGN.md`:
 *   `[x]` Create token optimization files (`AGENTS.md` and `Gemini.md`)
 *   `[x]` Initialize the CalcKaro application structure (Astro configuration & files)
 *   `[x]` Scaffold `Base.astro` — dark theme, Geist font, nav (search + categories), footer
-*   `[ ]` Build `calculators.json` containing Phase 1 entries (10 calculators)
-*   `[ ]` Build `[calculator].astro` dynamic page template
-*   `[ ]` Build `InputField.astro` and `ResultDisplay.astro` reusable components
-*   `[ ]` Implement core calculation logic in `src/components/CalcLogic/`: `emi.ts`, `gst.ts`, `sip.ts`, `percentage.ts`, `age.ts`
-*   `[ ]` Wire Phase 1 calculators end-to-end (interactive input/output)
+*   `[x]` Build `calculators.json` containing Phase 1/Hub A entries (9 calculators)
+*   `[x]` Build `[calculator].astro` dynamic page template
+*   `[x]` Build `InputField.astro` and `ResultDisplay.astro` reusable components
+*   `[x]` Implement core calculation logic in `src/components/CalcLogic/`: `notice-period.ts`
+*   `[x]` Wire Phase 1/Hub A calculators end-to-end (`notice-period-calculator` active)
 *   `[ ]` Build homepage — category grid + `SearchBar.tsx` island
 *   `[ ]` Add FAQ JSON-LD structured data to all pages
 *   `[ ]` Add `RelatedCalcs.astro` internal linking
