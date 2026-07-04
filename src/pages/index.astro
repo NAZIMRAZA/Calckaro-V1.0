@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import SearchBar from '../components/SearchBar';
 ---
 
 <Base>
@@ -12,15 +13,7 @@ import Base from '../layouts/Base.astro';
     </p>
     
     <div class="mt-8 flex justify-center">
-      <div class="relative w-full max-w-md">
-        <input 
-          type="text" 
-          placeholder="Search 20+ calculators (e.g. GST, Salary, HRA)..." 
-          disabled
-          class="w-full rounded-md border border-vercel-gray-medium bg-vercel-gray-dark px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-ink-faint focus:border-vercel-blue"
-        />
-        <span class="absolute right-4 top-3.5 text-xs font-mono text-ink-faint">Ctrl K</span>
-      </div>
+      <SearchBar client:load />
     </div>
   </div>
 
