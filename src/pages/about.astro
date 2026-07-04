@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="About Us — CalcKaro" description="About CalcKaro, the premier calculator utility hub built for India.">
+  <div class="max-w-3xl mx-auto space-y-6 py-8 leading-relaxed text-ink-muted">
+    <div class="border-b border-vercel-gray-medium pb-4">
+      <h1 class="text-3xl font-extrabold text-white tracking-tight">About Us</h1>
+      <p class="text-sm text-ink-muted mt-2">India's Dedicated Calculator Hub.</p>
+    </div>
+
+    <p class="text-xs">
+      Welcome to **CalcKaro**, a localized utility engine dedicated to providing fast, accurate, and completely free online calculators built for India.
+    </p>
+
+    <h2 class="text-base font-bold text-white mt-6">Our Mission</h2>
+    <p class="text-xs">
+      Most global calculator websites are designed for international audiences. They default to dollars, use millions/billions format, and do not understand the localized tax slabs, payroll rules, and compliance standards unique to India. 
+      Our mission is to bridge this gap. CalcKaro defaults to INR (`₹`), formats outputs according to Indian currency standards (lakhs and crores), and adapts its logic directly to rules defined by the Indian government (Payment of Gratuity Act, Income Tax slabs, and GST guidelines).
+    </p>
+
+    <h2 class="text-base font-bold text-white mt-6">Core Values</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+      <div class="p-4 border border-vercel-gray-medium rounded-xs bg-vercel-gray-dark">
+        <div class="text-sm font-bold text-white mb-1">Zero Latency</div>
+        <p class="text-[10px]">Client-side logic runs calculations instantaneously as you type.</p>
+      </div>
+      <div class="p-4 border border-vercel-gray-medium rounded-xs bg-vercel-gray-dark">
+        <div class="text-sm font-bold text-white mb-1">Privacy First</div>
+        <p class="text-[10px]">Your data never leaves your device. No backend storage.</p>
+      </div>
+      <div class="p-4 border border-vercel-gray-medium rounded-xs bg-vercel-gray-dark">
+        <div class="text-sm font-bold text-white mb-1">100% Free</div>
+        <p class="text-[10px]">Access premium, specialized finance utilities without any paywalls.</p>
+      </div>
+    </div>
+  </div>
+</Base>

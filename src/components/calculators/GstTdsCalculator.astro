@@ -1,0 +1,158 @@
+---
+import InputField from '../InputField.astro';
+---
+
+<div class="lg:col-span-6 space-y-6">
+  <!-- Inputs -->
+  <InputField id="billAmount" label="Billing / Contract Amount" prefix="₹" value={50000} type="number" />
+  
+  <InputField 
+    id="gstRate" 
+    label="GST Rate" 
+    type="select" 
+    value="0.18"
+    options={[
+      { value: '0.18', label: '18% (IT/Design/Consultancy)' },
+      { value: '0.12', label: '12% (Goods/Services)' },
+      { value: '0.05', label: '5% (Essential Services)' },
+      { value: '0.28', label: '28% (Luxury items)' },
+      { value: '0.00', label: '0% (No GST / Exempted)' }
+    ]} 
+  />
+
+  <InputField 
+    id="tdsRate" 
+    label="TDS Rate" 
+    type="select" 
+    value="0.10"
+    options={[
+      { value: '0.10', label: '10% (Sec 194J — Professional Fees)' },
+      { value: '0.02', label: '2% (Sec 194C — Contractor)' },
+      { value: '0.075', label: '7.5% (Special Rates)' },
+      { value: '0.00', label: '0% (No TDS)' }
+    ]} 
+  />
+
+  <InputField 
+    id="inclusiveOfGst" 
+    label="Is the billing amount inclusive of GST?" 
+    type="select" 
+    value="false"
+    options={[
+      { value: 'false', label: 'Exclusive of GST (GST added on top)' },
+      { value: 'true', label: 'Inclusive of GST (GST included in bill)' }
+    ]}
+  />
+</div>
+
+<!-- Outputs -->
+<div class="lg:col-span-6 border border-vercel-gray-medium bg-vercel-gray-dark rounded-xs p-6 space-y-6">
+  <div>
+    <h3 class="text-xs uppercase tracking-wider text-ink-faint">Net Payout to Bank</h3>
+    <div id="result-net-payout" class="text-4xl font-extrabold text-white font-mono mt-1 select-all">₹54,000</div>
+    <div class="text-xs text-ink-muted mt-1">Invoice Value minus TDS Deducted</div>
+  </div>
+  
+  <div class="border-t border-vercel-gray-medium pt-4 space-y-3 text-xs">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Basic Service Value</span>
+      <span id="result-basic-val" class="text-white font-mono">₹50,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">GST Collected</span>
+      <span id="result-gst-amt" class="text-white font-mono">₹9,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Gross Invoice Value</span>
+      <span id="result-invoice-val" class="text-white font-mono">₹59,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">TDS Deducted (Sec 194J/C)</span>
+      <span id="result-tds-amt" class="text-red-500 font-mono">-₹5,000</span>
+    </div>
+  </div>
+
+  <div class="pt-2">
+    <button 
+      id="copy-btn" 
+      class="w-full py-2 px-4 rounded-xs border border-vercel-gray-light bg-vercel-gray-medium text-xs font-semibold text-white hover:bg-vercel-gray-light hover:border-white transition-all cursor-pointer"
+    >
+      Copy Net Payout
+    </button>
+  </div>
+</div>
+
+<script>
+  import { calculateGstTds } from '../CalcLogic/gst-tds';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'decimal',
+    maximumFractionDigits: 0
+  });
+
+  const formatINR = (val: number) => `₹${formatter.format(val)}`;
+
+  // Bind elements
+  const billAmountInput = document.getElementById('billAmount') as HTMLInputElement;
+  const gstRateInput = document.getElementById('gstRate') as HTMLSelectElement;
+  const tdsRateInput = document.getElementById('tdsRate') as HTMLSelectElement;
+  const inclusiveOfGstInput = document.getElementById('inclusiveOfGst') as HTMLSelectElement;
+
+  const resultNetPayout = document.getElementById('result-net-payout') as HTMLDivElement;
+  const resultBasicVal = document.getElementById('result-basic-val') as HTMLSpanElement;
+  const resultGstAmt = document.getElementById('result-gst-amt') as HTMLSpanElement;
+  const resultInvoiceVal = document.getElementById('result-invoice-val') as HTMLSpanElement;
+  const resultTdsAmt = document.getElementById('result-tds-amt') as HTMLSpanElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+
+  function updateCalculations() {
+    if (!billAmountInput || !gstRateInput || !tdsRateInput || !inclusiveOfGstInput) return;
+
+    const billAmount = parseFloat(billAmountInput.value) || 0;
+    const gstRate = parseFloat(gstRateInput.value) || 0;
+    const tdsRate = parseFloat(tdsRateInput.value) || 0;
+    const inclusiveOfGst = inclusiveOfGstInput.value === 'true';
+
+    const result = calculateGstTds({
+      billAmount,
+      gstRate,
+      tdsRate,
+      inclusiveOfGst
+    });
+
+    // Update DOM
+    if (resultNetPayout) resultNetPayout.textContent = formatINR(result.netPayout);
+    if (resultBasicVal) resultBasicVal.textContent = formatINR(result.basicValue);
+    if (resultGstAmt) resultGstAmt.textContent = formatINR(result.gstAmount);
+    if (resultInvoiceVal) resultInvoiceVal.textContent = formatINR(result.invoiceValue);
+    if (resultTdsAmt) resultTdsAmt.textContent = `-${formatINR(result.tdsAmount)}`;
+  }
+
+  // Event Listeners
+  [billAmountInput, gstRateInput, tdsRateInput, inclusiveOfGstInput].forEach(el => {
+    if (el) {
+      el.addEventListener('input', updateCalculations);
+      el.addEventListener('change', updateCalculations);
+    }
+  });
+
+  // Copy action
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      if (resultNetPayout && resultNetPayout.textContent) {
+        navigator.clipboard.writeText(resultNetPayout.textContent).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('border-vercel-blue');
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.classList.remove('border-vercel-blue');
+          }, 1500);
+        });
+      }
+    });
+  }
+
+  // Initial update
+  updateCalculations();
+</script>

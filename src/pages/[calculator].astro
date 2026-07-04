@@ -1,72 +1,24 @@
 ---
-import Base from '../layouts/Base.astro';
-import CalculatorShell from '../components/CalculatorShell.astro';
-import NoticePeriodCalculator from '../components/calculators/NoticePeriodCalculator.astro';
-
 import calculators from '../data/calculators.json';
 
 export async function getStaticPaths() {
   return calculators.map(calc => ({
     params: { calculator: calc.slug },
-    props: { calc }
+    props: { slug: calc.slug }
   }));
 }
 
-const { calc } = Astro.props;
-const { slug, name, category, h1, metaDescription, faqs, relatedSlugs } = calc;
-
-// Hub-specific definitions for calculators
-let formulaText = "";
-let formulaVariables: { name: string; description: string }[] = [];
-let steps: string[] = [];
-
-if (slug === 'notice-period-calculator') {
-  formulaText = "Buyout Cost = (Gross Salary / 30) * Days to Buy Out";
-  formulaVariables = [
-    { name: "Gross Salary", description: "Your monthly gross salary (base + allowances) used to compute the daily pro-rata wage." },
-    { name: "Days to Buy Out", description: "The difference between your required notice period and the actual days served." }
-  ];
-  steps = [
-    "Enter your monthly gross salary.",
-    "Input the notice period required by your company (in days).",
-    "Input the notice period you plan to serve (in days).",
-    "Instantly view the net buyout amount you or the employer will need to pay."
-  ];
-}
+const { slug } = Astro.props;
 ---
-
-<Base title={calc.metaTitle} description={calc.metaDescription}>
-  {slug === 'notice-period-calculator' ? (
-    <CalculatorShell
-      slug={slug}
-      name={name}
-      category={category}
-      h1={h1}
-      metaDescription={metaDescription}
-      faqs={faqs}
-      relatedSlugs={relatedSlugs}
-      formulaText={formulaText}
-      formulaVariables={formulaVariables}
-      steps={steps}
-    >
-      <NoticePeriodCalculator />
-    </CalculatorShell>
-  ) : (
-    <CalculatorShell
-      slug={slug}
-      name={name}
-      category={category}
-      h1={h1}
-      metaDescription={metaDescription}
-      faqs={faqs}
-      relatedSlugs={relatedSlugs}
-      formulaText="Will be updated shortly."
-      formulaVariables={[]}
-      steps={["Select calculator category.", "Input requested parameters.", "View real-time results."]}
-    >
-      <div class="lg:col-span-12 p-12 text-center text-ink-muted border border-vercel-gray-medium rounded-xs bg-vercel-gray-dark font-mono text-xs">
-        <span class="text-vercel-blue">&gt;</span> This calculator is currently in the active development pipeline.
-      </div>
-    </CalculatorShell>
-  )}
-</Base>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content={`0;url=/finance/${slug}`} />
+  <title>Redirecting...</title>
+  <link rel="canonical" href={`/finance/${slug}`} />
+</head>
+<body>
+  <p>Redirecting to <a href={`/finance/${slug}`}>/finance/{slug}</a>...</p>
+</body>
+</html>

@@ -1,0 +1,166 @@
+---
+import InputField from '../InputField.astro';
+---
+
+<div class="lg:col-span-6 space-y-6">
+  <!-- Inputs -->
+  <InputField id="taxableSalary" label="Annual Taxable Salary (as per Form 16)" prefix="₹" value={800000} type="number" />
+  <InputField id="otherIncome" label="Other Income (Interest, House Property, Rent)" prefix="₹" value={50000} type="number" />
+  <InputField id="totalDeductions" label="Total Deductions Claimed (For Old Regime)" prefix="₹" value={150000} type="number" />
+  <InputField id="tdsDeposited" label="TDS Already Deducted (As per Form 26AS)" prefix="₹" value={20000} type="number" />
+  
+  <InputField 
+    id="preferredRegime" 
+    label="Tax Regime Preference" 
+    type="select" 
+    value="new"
+    options={[
+      { value: 'new', label: 'New Tax Regime (Slabs with standard 75k)' },
+      { value: 'old', label: 'Old Tax Regime (Slabs with exemptions)' }
+    ]} 
+  />
+</div>
+
+<!-- Outputs -->
+<div class="lg:col-span-6 border border-vercel-gray-medium bg-vercel-gray-dark rounded-xs p-6 space-y-6">
+  <div>
+    <h3 id="result-status" class="text-xs uppercase tracking-wider text-ink-faint">Tax Refundable</h3>
+    <div id="result-amount" class="text-4xl font-extrabold text-white font-mono mt-1 select-all">₹15,000</div>
+    <div class="text-xs text-ink-muted mt-1">Difference between actual liability and deposited TDS</div>
+  </div>
+  
+  <div class="border-t border-vercel-gray-medium pt-4 space-y-3 text-xs">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Gross Income</span>
+      <span id="result-gross" class="text-white font-mono">₹8,50,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Net Taxable Income</span>
+      <span id="result-taxable" class="text-white font-mono">₹7,75,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Total Tax Liability (Inc. Cess)</span>
+      <span id="result-liability" class="text-white font-mono">₹35,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">TDS Paid</span>
+      <span id="result-tds" class="text-green-500 font-mono">₹20,000</span>
+    </div>
+  </div>
+
+  <div class="pt-2">
+    <button 
+      id="copy-btn" 
+      class="w-full py-2 px-4 rounded-xs border border-vercel-gray-light bg-vercel-gray-medium text-xs font-semibold text-white hover:bg-vercel-gray-light hover:border-white transition-all cursor-pointer"
+    >
+      Copy Statement
+    </button>
+  </div>
+</div>
+
+<script>
+  import { calculateAnnualTax } from '../CalcLogic/annual-tax';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'decimal',
+    maximumFractionDigits: 0
+  });
+
+  const formatINR = (val: number) => `₹${formatter.format(val)}`;
+
+  // Bind elements
+  const taxableSalaryInput = document.getElementById('taxableSalary') as HTMLInputElement;
+  const otherIncomeInput = document.getElementById('otherIncome') as HTMLInputElement;
+  const totalDeductionsInput = document.getElementById('totalDeductions') as HTMLInputElement;
+  const tdsDepositedInput = document.getElementById('tdsDeposited') as HTMLInputElement;
+  const preferredRegimeInput = document.getElementById('preferredRegime') as HTMLSelectElement;
+
+  const resultStatus = document.getElementById('result-status') as HTMLHeadingElement;
+  const resultAmount = document.getElementById('result-amount') as HTMLDivElement;
+  const resultGross = document.getElementById('result-gross') as HTMLSpanElement;
+  const resultTaxable = document.getElementById('result-taxable') as HTMLSpanElement;
+  const resultLiability = document.getElementById('result-liability') as HTMLSpanElement;
+  const resultTds = document.getElementById('result-tds') as HTMLSpanElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+
+  function updateCalculations() {
+    if (
+      !taxableSalaryInput || 
+      !otherIncomeInput || 
+      !totalDeductionsInput || 
+      !tdsDepositedInput || 
+      !preferredRegimeInput
+    ) return;
+
+    const taxableSalary = parseFloat(taxableSalaryInput.value) || 0;
+    const otherIncome = parseFloat(otherIncomeInput.value) || 0;
+    const totalDeductions = parseFloat(totalDeductionsInput.value) || 0;
+    const tdsDeposited = parseFloat(tdsDepositedInput.value) || 0;
+    const preferredRegime = preferredRegimeInput.value as 'old' | 'new';
+
+    const result = calculateAnnualTax({
+      taxableSalary,
+      otherIncome,
+      totalDeductions,
+      tdsDeposited,
+      preferredRegime
+    });
+
+    // Update DOM
+    if (resultStatus) resultStatus.textContent = result.statusLabel;
+    if (resultAmount) resultAmount.textContent = formatINR(result.balancePayable);
+    if (resultGross) resultGross.textContent = formatINR(result.grossIncome);
+    if (resultTaxable) resultTaxable.textContent = formatINR(result.netTaxableIncome);
+    if (resultLiability) resultLiability.textContent = formatINR(result.totalTaxLiability);
+    if (resultTds) resultTds.textContent = formatINR(tdsDeposited);
+
+    if (result.isRefund) {
+      if (resultStatus) {
+        resultStatus.classList.remove('text-ink-faint');
+        resultStatus.classList.add('text-green-500');
+      }
+      if (resultAmount) {
+        resultAmount.classList.remove('text-red-500');
+        resultAmount.classList.add('text-green-500');
+      }
+    } else {
+      if (resultStatus) {
+        resultStatus.classList.remove('text-green-500');
+        resultStatus.classList.add('text-ink-faint');
+      }
+      if (resultAmount) {
+        resultAmount.classList.remove('text-green-500');
+        resultAmount.classList.add('text-red-500');
+      }
+    }
+  }
+
+  // Event Listeners
+  [taxableSalaryInput, otherIncomeInput, totalDeductionsInput, tdsDepositedInput, preferredRegimeInput].forEach(el => {
+    if (el) {
+      el.addEventListener('input', updateCalculations);
+      el.addEventListener('change', updateCalculations);
+    }
+  });
+
+  // Copy action
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      if (resultStatus && resultAmount) {
+        const text = `${resultStatus.textContent}: ${resultAmount.textContent} (Gross Income: ${resultGross.textContent}, Tax Liability: ${resultLiability.textContent})`;
+        navigator.clipboard.writeText(text).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('border-vercel-blue');
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.classList.remove('border-vercel-blue');
+          }, 1500);
+        });
+      }
+    });
+  }
+
+  // Initial update
+  updateCalculations();
+</script>

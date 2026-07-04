@@ -1,0 +1,167 @@
+---
+import InputField from '../InputField.astro';
+---
+
+<div class="lg:col-span-6 space-y-6">
+  <!-- Inputs -->
+  <InputField id="annualCtc" label="Annual CTC (Cost to Company)" prefix="₹" value={1200000} type="number" />
+  <InputField id="basicPercentage" label="Basic Salary (% of CTC)" suffix="%" value={50} type="number" min={10} max={100} />
+  
+  <InputField 
+    id="epfOption" 
+    label="EPF Contribution" 
+    type="select" 
+    value="standard"
+    options={[
+      { value: 'standard', label: 'Standard (12% of Basic)' },
+      { value: 'minimum', label: 'Restricted (₹1,800/month)' },
+      { value: 'none', label: 'No Contribution (Opt-out)' }
+    ]} 
+  />
+
+  <InputField 
+    id="gratuityIncluded" 
+    label="Is Gratuity included in CTC?" 
+    type="select" 
+    value="true"
+    options={[
+      { value: 'true', label: 'Yes, Gratuity is part of CTC' },
+      { value: 'false', label: 'No, Gratuity is paid over and above CTC' }
+    ]}
+  />
+
+  <InputField id="professionalTaxMonthly" label="Monthly Professional Tax (PT)" prefix="₹" value={200} type="number" />
+</div>
+
+<!-- Outputs -->
+<div class="lg:col-span-6 border border-vercel-gray-medium bg-vercel-gray-dark rounded-xs p-6 space-y-6">
+  <div>
+    <h3 class="text-xs uppercase tracking-wider text-ink-faint">Monthly In-Hand Salary</h3>
+    <div id="result-take-home" class="text-4xl font-extrabold text-white font-mono mt-1 select-all">₹82,300</div>
+    <div class="text-xs text-ink-muted mt-1">Take-home salary after PF, PT, and Tax deductions</div>
+  </div>
+  
+  <div class="border-t border-vercel-gray-medium pt-4 space-y-3 text-xs">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Monthly Gross Salary</span>
+      <span id="result-gross" class="text-white font-mono">₹95,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Basic Salary</span>
+      <span id="result-basic" class="text-white font-mono">₹50,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">EPF (Employee share)</span>
+      <span id="result-pf-employee" class="text-red-500 font-mono">-₹6,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">EPF (Employer share - included in CTC)</span>
+      <span id="result-pf-employer" class="text-ink-muted font-mono">₹6,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Gratuity (Employer reserve)</span>
+      <span id="result-gratuity" class="text-ink-muted font-mono">₹2,400</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Professional Tax</span>
+      <span id="result-pt" class="text-red-500 font-mono">-₹200</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Income Tax (Monthly pro-rata New Regime)</span>
+      <span id="result-tax" class="text-red-500 font-mono">-₹6,500</span>
+    </div>
+  </div>
+
+  <div class="pt-2">
+    <button 
+      id="copy-btn" 
+      class="w-full py-2 px-4 rounded-xs border border-vercel-gray-light bg-vercel-gray-medium text-xs font-semibold text-white hover:bg-vercel-gray-light hover:border-white transition-all cursor-pointer"
+    >
+      Copy Take-Home Payout
+    </button>
+  </div>
+</div>
+
+<script>
+  import { calculateSalary } from '../CalcLogic/salary';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'decimal',
+    maximumFractionDigits: 0
+  });
+
+  const formatINR = (val: number) => `₹${formatter.format(val)}`;
+
+  // Bind elements
+  const ctcInput = document.getElementById('annualCtc') as HTMLInputElement;
+  const basicPercentageInput = document.getElementById('basicPercentage') as HTMLInputElement;
+  const epfOptionInput = document.getElementById('epfOption') as HTMLSelectElement;
+  const gratuityIncludedInput = document.getElementById('gratuityIncluded') as HTMLSelectElement;
+  const ptInput = document.getElementById('professionalTaxMonthly') as HTMLInputElement;
+
+  const resultTakeHome = document.getElementById('result-take-home') as HTMLDivElement;
+  const resultGross = document.getElementById('result-gross') as HTMLSpanElement;
+  const resultBasic = document.getElementById('result-basic') as HTMLSpanElement;
+  const resultPfEmployee = document.getElementById('result-pf-employee') as HTMLSpanElement;
+  const resultPfEmployer = document.getElementById('result-pf-employer') as HTMLSpanElement;
+  const resultGratuity = document.getElementById('result-gratuity') as HTMLSpanElement;
+  const resultPt = document.getElementById('result-pt') as HTMLSpanElement;
+  const resultTax = document.getElementById('result-tax') as HTMLSpanElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+
+  function updateCalculations() {
+    if (!ctcInput || !basicPercentageInput || !epfOptionInput || !gratuityIncludedInput || !ptInput) return;
+
+    const annualCtc = parseFloat(ctcInput.value) || 0;
+    const basicPercentage = parseFloat(basicPercentageInput.value) || 0;
+    const epfOption = epfOptionInput.value as 'standard' | 'minimum' | 'none';
+    const gratuityIncluded = gratuityIncludedInput.value === 'true';
+    const professionalTaxMonthly = parseFloat(ptInput.value) || 0;
+
+    const result = calculateSalary({
+      annualCtc,
+      basicPercentage,
+      epfOption,
+      gratuityIncluded,
+      professionalTaxMonthly
+    });
+
+    // Update DOM
+    if (resultTakeHome) resultTakeHome.textContent = formatINR(result.monthlyTakeHome);
+    if (resultGross) resultGross.textContent = formatINR(result.monthlyGross);
+    if (resultBasic) resultBasic.textContent = formatINR(result.monthlyBasic);
+    if (resultPfEmployee) resultPfEmployee.textContent = `-${formatINR(result.monthlyEpfEmployee)}`;
+    if (resultPfEmployer) resultPfEmployer.textContent = formatINR(result.monthlyEpfEmployer);
+    if (resultGratuity) resultGratuity.textContent = formatINR(result.monthlyGratuity);
+    if (resultPt) resultPt.textContent = `-${formatINR(result.monthlyProfessionalTax)}`;
+    if (resultTax) resultTax.textContent = `-${formatINR(result.monthlyIncomeTax)}`;
+  }
+
+  // Event Listeners
+  [ctcInput, basicPercentageInput, epfOptionInput, gratuityIncludedInput, ptInput].forEach(el => {
+    if (el) {
+      el.addEventListener('input', updateCalculations);
+      el.addEventListener('change', updateCalculations);
+    }
+  });
+
+  // Copy action
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      if (resultTakeHome && resultTakeHome.textContent) {
+        navigator.clipboard.writeText(resultTakeHome.textContent).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('border-vercel-blue');
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.classList.remove('border-vercel-blue');
+          }, 1500);
+        });
+      }
+    });
+  }
+
+  // Initial update
+  updateCalculations();
+</script>

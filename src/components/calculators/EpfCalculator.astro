@@ -1,0 +1,145 @@
+---
+import InputField from '../InputField.astro';
+---
+
+<div class="lg:col-span-6 space-y-6">
+  <!-- Inputs -->
+  <InputField id="monthlyBasic" label="Monthly Basic Salary" prefix="₹" value={50000} type="number" />
+  <InputField id="currentBalance" label="Current EPF Balance" prefix="₹" value={0} type="number" />
+  <InputField id="tenureYears" label="Tenure to Retirement" suffix="years" value={20} type="number" min={1} max={50} />
+  
+  <div class="grid grid-cols-2 gap-4">
+    <InputField id="interestRate" label="EPF Interest Rate" suffix="%" value={8.25} type="number" step={0.05} />
+    <InputField id="annualIncrement" label="Annual Salary Hike" suffix="%" value={5} type="number" />
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <InputField id="employeeContributionRate" label="Employee Share" suffix="%" value={12} type="number" />
+    <InputField id="employerContributionRate" label="Employer Share" suffix="%" value={3.67} type="number" />
+  </div>
+</div>
+
+<!-- Outputs -->
+<div class="lg:col-span-6 border border-vercel-gray-medium bg-vercel-gray-dark rounded-xs p-6 space-y-6">
+  <div>
+    <h3 class="text-xs uppercase tracking-wider text-ink-faint">EPF Maturity Amount</h3>
+    <div id="result-maturity" class="text-4xl font-extrabold text-white font-mono mt-1 select-all">₹38,50,000</div>
+    <div class="text-xs text-ink-muted mt-1">Total accumulated fund at the end of tenure</div>
+  </div>
+  
+  <div class="border-t border-vercel-gray-medium pt-4 space-y-3 text-xs">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Total Contributions</span>
+      <span id="result-contributions" class="text-white font-mono">₹18,50,000</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Total Interest Earned</span>
+      <span id="result-interest" class="text-green-500 font-mono">₹20,00,000</span>
+    </div>
+  </div>
+
+  <div class="pt-2">
+    <button 
+      id="copy-btn" 
+      class="w-full py-2 px-4 rounded-xs border border-vercel-gray-light bg-vercel-gray-medium text-xs font-semibold text-white hover:bg-vercel-gray-light hover:border-white transition-all cursor-pointer"
+    >
+      Copy Maturity Amount
+    </button>
+  </div>
+</div>
+
+<script>
+  import { calculateEpf } from '../CalcLogic/epf';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'decimal',
+    maximumFractionDigits: 0
+  });
+
+  const formatINR = (val: number) => `₹${formatter.format(val)}`;
+
+  // Bind elements
+  const monthlyBasicInput = document.getElementById('monthlyBasic') as HTMLInputElement;
+  const currentBalanceInput = document.getElementById('currentBalance') as HTMLInputElement;
+  const tenureYearsInput = document.getElementById('tenureYears') as HTMLInputElement;
+  const interestRateInput = document.getElementById('interestRate') as HTMLInputElement;
+  const annualIncrementInput = document.getElementById('annualIncrement') as HTMLInputElement;
+  const employeeContributionRateInput = document.getElementById('employeeContributionRate') as HTMLInputElement;
+  const employerContributionRateInput = document.getElementById('employerContributionRate') as HTMLInputElement;
+
+  const resultMaturity = document.getElementById('result-maturity') as HTMLDivElement;
+  const resultContributions = document.getElementById('result-contributions') as HTMLSpanElement;
+  const resultInterest = document.getElementById('result-interest') as HTMLSpanElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+
+  function updateCalculations() {
+    if (
+      !monthlyBasicInput || 
+      !currentBalanceInput || 
+      !tenureYearsInput || 
+      !interestRateInput || 
+      !annualIncrementInput ||
+      !employeeContributionRateInput ||
+      !employerContributionRateInput
+    ) return;
+
+    const monthlyBasic = parseFloat(monthlyBasicInput.value) || 0;
+    const currentBalance = parseFloat(currentBalanceInput.value) || 0;
+    const tenureYears = parseFloat(tenureYearsInput.value) || 0;
+    const interestRate = parseFloat(interestRateInput.value) || 0;
+    const annualIncrement = parseFloat(annualIncrementInput.value) || 0;
+    const employeeContributionRate = parseFloat(employeeContributionRateInput.value) || 0;
+    const employerContributionRate = parseFloat(employerContributionRateInput.value) || 0;
+
+    const result = calculateEpf({
+      currentBalance,
+      monthlyBasic,
+      annualIncrement,
+      interestRate,
+      employeeContributionRate,
+      employerContributionRate,
+      tenureYears
+    });
+
+    // Update DOM
+    if (resultMaturity) resultMaturity.textContent = formatINR(result.maturityAmount);
+    if (resultContributions) resultContributions.textContent = formatINR(result.totalContributions);
+    if (resultInterest) resultInterest.textContent = formatINR(result.totalInterestEarned);
+  }
+
+  // Event Listeners
+  [
+    monthlyBasicInput, 
+    currentBalanceInput, 
+    tenureYearsInput, 
+    interestRateInput, 
+    annualIncrementInput,
+    employeeContributionRateInput,
+    employerContributionRateInput
+  ].forEach(el => {
+    if (el) {
+      el.addEventListener('input', updateCalculations);
+      el.addEventListener('change', updateCalculations);
+    }
+  });
+
+  // Copy action
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      if (resultMaturity && resultMaturity.textContent) {
+        navigator.clipboard.writeText(resultMaturity.textContent).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('border-vercel-blue');
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.classList.remove('border-vercel-blue');
+          }, 1500);
+        });
+      }
+    });
+  }
+
+  // Initial update
+  updateCalculations();
+</script>

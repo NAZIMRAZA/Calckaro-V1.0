@@ -1,0 +1,136 @@
+---
+import InputField from '../InputField.astro';
+---
+
+<div class="lg:col-span-6 space-y-6">
+  <!-- Inputs -->
+  <InputField id="basicSalary" label="Monthly Basic Salary" prefix="₹" value={50000} type="number" />
+  <InputField id="hraReceived" label="Monthly HRA Allowance Received" prefix="₹" value={20000} type="number" />
+  <InputField id="rentPaid" label="Monthly Rent Paid" prefix="₹" value={15000} type="number" />
+  
+  <InputField 
+    id="isMetro" 
+    label="City of Residence" 
+    type="select" 
+    value="false"
+    options={[
+      { value: 'false', label: 'Non-Metro (40% of Basic)' },
+      { value: 'true', label: 'Metro — Delhi, Mumbai, Chennai, Kolkata (50% of Basic)' }
+    ]} 
+  />
+</div>
+
+<!-- Outputs -->
+<div class="lg:col-span-6 border border-vercel-gray-medium bg-vercel-gray-dark rounded-xs p-6 space-y-6">
+  <div>
+    <h3 class="text-xs uppercase tracking-wider text-ink-faint">Monthly HRA Tax Exemption</h3>
+    <div id="result-exempt" class="text-4xl font-extrabold text-white font-mono mt-1 select-all">₹10,000</div>
+    <div class="text-xs text-ink-muted mt-1">Amount deducted from taxable salary under Section 10(13A)</div>
+  </div>
+  
+  <div class="border-t border-vercel-gray-medium pt-4 space-y-3 text-xs">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Taxable HRA Component</span>
+      <span id="result-taxable" class="text-red-500 font-mono">₹10,000</span>
+    </div>
+    <div class="border-t border-vercel-gray-medium pt-3 space-y-2">
+      <div class="text-[10px] uppercase text-ink-faint tracking-wider">Calculation Details (Minimum of):</div>
+      <div class="flex justify-between">
+        <span class="text-ink-muted">1. HRA Received</span>
+        <span id="result-rule1" class="text-white font-mono">₹20,000</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-ink-muted">2. Rent Paid minus 10% Basic</span>
+        <span id="result-rule2" class="text-white font-mono">₹10,000</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-ink-muted">3. Basic Salary Percentage limit</span>
+        <span id="result-rule3" class="text-white font-mono">₹20,000</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-2">
+    <button 
+      id="copy-btn" 
+      class="w-full py-2 px-4 rounded-xs border border-vercel-gray-light bg-vercel-gray-medium text-xs font-semibold text-white hover:bg-vercel-gray-light hover:border-white transition-all cursor-pointer"
+    >
+      Copy Exempt HRA
+    </button>
+  </div>
+</div>
+
+<script>
+  import { calculateHra } from '../CalcLogic/hra';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'decimal',
+    maximumFractionDigits: 0
+  });
+
+  const formatINR = (val: number) => `₹${formatter.format(val)}`;
+
+  // Bind elements
+  const basicSalaryInput = document.getElementById('basicSalary') as HTMLInputElement;
+  const hraReceivedInput = document.getElementById('hraReceived') as HTMLInputElement;
+  const rentPaidInput = document.getElementById('rentPaid') as HTMLInputElement;
+  const isMetroInput = document.getElementById('isMetro') as HTMLSelectElement;
+
+  const resultExempt = document.getElementById('result-exempt') as HTMLDivElement;
+  const resultTaxable = document.getElementById('result-taxable') as HTMLSpanElement;
+  const resultRule1 = document.getElementById('result-rule1') as HTMLSpanElement;
+  const resultRule2 = document.getElementById('result-rule2') as HTMLSpanElement;
+  const resultRule3 = document.getElementById('result-rule3') as HTMLSpanElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+
+  function updateCalculations() {
+    if (!basicSalaryInput || !hraReceivedInput || !rentPaidInput || !isMetroInput) return;
+
+    const basicSalary = parseFloat(basicSalaryInput.value) || 0;
+    const hraReceived = parseFloat(hraReceivedInput.value) || 0;
+    const rentPaid = parseFloat(rentPaidInput.value) || 0;
+    const isMetro = isMetroInput.value === 'true';
+
+    const result = calculateHra({
+      basicSalary,
+      hraReceived,
+      rentPaid,
+      isMetro
+    });
+
+    // Update DOM
+    if (resultExempt) resultExempt.textContent = formatINR(result.hraExempt);
+    if (resultTaxable) resultTaxable.textContent = formatINR(result.hraTaxable);
+    if (resultRule1) resultRule1.textContent = formatINR(result.rule1ActualHra);
+    if (resultRule2) resultRule2.textContent = formatINR(result.rule2RentMinusTenBasic);
+    if (resultRule3) resultRule3.textContent = formatINR(result.rule3BasicPercentage);
+  }
+
+  // Event Listeners
+  [basicSalaryInput, hraReceivedInput, rentPaidInput, isMetroInput].forEach(el => {
+    if (el) {
+      el.addEventListener('input', updateCalculations);
+      el.addEventListener('change', updateCalculations);
+    }
+  });
+
+  // Copy action
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      if (resultExempt && resultExempt.textContent) {
+        navigator.clipboard.writeText(resultExempt.textContent).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('border-vercel-blue');
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.classList.remove('border-vercel-blue');
+          }, 1500);
+        });
+      }
+    });
+  }
+
+  // Initial update
+  updateCalculations();
+</script>

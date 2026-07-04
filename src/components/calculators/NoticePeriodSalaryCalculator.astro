@@ -1,0 +1,129 @@
+---
+import InputField from '../InputField.astro';
+---
+
+<div class="lg:col-span-6 space-y-6">
+  <!-- Inputs -->
+  <InputField id="grossSalary" label="Monthly Gross Salary" prefix="₹" value={150000} type="number" />
+  <InputField id="servedDays" label="Days Served During Notice" suffix="days" value={15} type="number" />
+  <InputField id="lopLeaves" label="Loss of Pay (LOP) Leaves Taken" suffix="days" value={0} type="number" />
+  
+  <InputField 
+    id="totalDaysInMonth" 
+    label="Total Days in Payout Month" 
+    type="select" 
+    value="30"
+    options={[
+      { value: '30', label: '30 Days' },
+      { value: '31', label: '31 Days' },
+      { value: '28', label: '28 Days' },
+      { value: '29', label: '29 Days' }
+    ]} 
+  />
+</div>
+
+<!-- Outputs -->
+<div class="lg:col-span-6 border border-vercel-gray-medium bg-vercel-gray-dark rounded-xs p-6 space-y-6">
+  <div>
+    <h3 class="text-xs uppercase tracking-wider text-ink-faint">Net Notice Period Payout</h3>
+    <div id="result-salary" class="text-4xl font-extrabold text-white font-mono mt-1 select-all">₹75,000</div>
+    <div class="text-xs text-ink-muted mt-1">Pro-rata pay for served working days</div>
+  </div>
+  
+  <div class="border-t border-vercel-gray-medium pt-4 space-y-3 text-xs">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Daily Payout Rate</span>
+      <span id="result-daily" class="text-white font-mono">₹5,000 / day</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Effective Payout Days</span>
+      <span id="result-days" class="text-white font-mono">15 days</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">LOP Deduction</span>
+      <span id="result-deduction" class="text-red-500 font-mono">₹0</span>
+    </div>
+  </div>
+
+  <div class="pt-2">
+    <button 
+      id="copy-btn" 
+      class="w-full py-2 px-4 rounded-xs border border-vercel-gray-light bg-vercel-gray-medium text-xs font-semibold text-white hover:bg-vercel-gray-light hover:border-white transition-all cursor-pointer"
+    >
+      Copy Payout Amount
+    </button>
+  </div>
+</div>
+
+<script>
+  import { calculateNoticePeriodSalary } from '../CalcLogic/notice-period-salary';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'decimal',
+    maximumFractionDigits: 0
+  });
+
+  const formatINR = (val: number) => `₹${formatter.format(val)}`;
+
+  // Bind elements
+  const grossSalaryInput = document.getElementById('grossSalary') as HTMLInputElement;
+  const servedDaysInput = document.getElementById('servedDays') as HTMLInputElement;
+  const totalDaysInMonthInput = document.getElementById('totalDaysInMonth') as HTMLSelectElement;
+  const lopLeavesInput = document.getElementById('lopLeaves') as HTMLInputElement;
+
+  const resultSalary = document.getElementById('result-salary') as HTMLDivElement;
+  const resultDaily = document.getElementById('result-daily') as HTMLSpanElement;
+  const resultDays = document.getElementById('result-days') as HTMLSpanElement;
+  const resultDeduction = document.getElementById('result-deduction') as HTMLSpanElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+
+  function updateCalculations() {
+    if (!grossSalaryInput || !servedDaysInput || !totalDaysInMonthInput || !lopLeavesInput) return;
+
+    const grossSalary = parseFloat(grossSalaryInput.value) || 0;
+    const servedDays = parseFloat(servedDaysInput.value) || 0;
+    const totalDaysInMonth = parseFloat(totalDaysInMonthInput.value) || 30;
+    const lopLeaves = parseFloat(lopLeavesInput.value) || 0;
+
+    const result = calculateNoticePeriodSalary({
+      grossSalary,
+      servedDays,
+      totalDaysInMonth,
+      lopLeaves
+    });
+
+    // Update DOM
+    if (resultSalary) resultSalary.textContent = formatINR(result.noticeSalary);
+    if (resultDaily) resultDaily.textContent = `${formatINR(result.dailyRate)} / day`;
+    if (resultDays) resultDays.textContent = `${result.effectiveDays} days`;
+    if (resultDeduction) resultDeduction.textContent = formatINR(result.deductionAmount);
+  }
+
+  // Event Listeners
+  [grossSalaryInput, servedDaysInput, totalDaysInMonthInput, lopLeavesInput].forEach(el => {
+    if (el) {
+      el.addEventListener('input', updateCalculations);
+      el.addEventListener('change', updateCalculations);
+    }
+  });
+
+  // Copy action
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      if (resultSalary && resultSalary.textContent) {
+        navigator.clipboard.writeText(resultSalary.textContent).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('border-vercel-blue');
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.classList.remove('border-vercel-blue');
+          }, 1500);
+        });
+      }
+    });
+  }
+
+  // Initial update
+  updateCalculations();
+</script>

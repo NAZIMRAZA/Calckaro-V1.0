@@ -1,0 +1,111 @@
+---
+import InputField from '../InputField.astro';
+---
+
+<div class="lg:col-span-6 space-y-6">
+  <!-- Inputs -->
+  <InputField id="basicSalary" label="Last Drawn Basic Salary + DA (Monthly)" prefix="₹" value={50000} type="number" />
+  <InputField id="completedYears" label="Completed Years of Service" suffix="years" value={6} type="number" min={1} max={100} />
+</div>
+
+<!-- Outputs -->
+<div class="lg:col-span-6 border border-vercel-gray-medium bg-vercel-gray-dark rounded-xs p-6 space-y-6">
+  <div>
+    <h3 class="text-xs uppercase tracking-wider text-ink-faint">Total Estimated Gratuity</h3>
+    <div id="result-amount" class="text-4xl font-extrabold text-white font-mono mt-1 select-all">₹1,73,077</div>
+    <div id="result-explanation" class="text-xs text-ink-muted mt-1">Eligible for gratuity calculation. Completed 6 years.</div>
+  </div>
+  
+  <div class="border-t border-vercel-gray-medium pt-4 space-y-3 text-xs">
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Tax-Exempt Amount</span>
+      <span id="result-exempt" class="text-white font-mono">₹1,73,077</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-ink-muted">Taxable Amount</span>
+      <span id="result-taxable" class="text-red-500 font-mono">₹0</span>
+    </div>
+  </div>
+
+  <div class="pt-2">
+    <button 
+      id="copy-btn" 
+      class="w-full py-2 px-4 rounded-xs border border-vercel-gray-light bg-vercel-gray-medium text-xs font-semibold text-white hover:bg-vercel-gray-light hover:border-white transition-all cursor-pointer"
+    >
+      Copy Gratuity Amount
+    </button>
+  </div>
+</div>
+
+<script>
+  import { calculateGratuity } from '../CalcLogic/gratuity';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'decimal',
+    maximumFractionDigits: 0
+  });
+
+  const formatINR = (val: number) => `₹${formatter.format(val)}`;
+
+  // Bind elements
+  const basicSalaryInput = document.getElementById('basicSalary') as HTMLInputElement;
+  const completedYearsInput = document.getElementById('completedYears') as HTMLInputElement;
+
+  const resultAmount = document.getElementById('result-amount') as HTMLDivElement;
+  const resultExplanation = document.getElementById('result-explanation') as HTMLDivElement;
+  const resultExempt = document.getElementById('result-exempt') as HTMLSpanElement;
+  const resultTaxable = document.getElementById('result-taxable') as HTMLSpanElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+
+  function updateCalculations() {
+    if (!basicSalaryInput || !completedYearsInput) return;
+
+    const basicSalary = parseFloat(basicSalaryInput.value) || 0;
+    const completedYears = parseFloat(completedYearsInput.value) || 0;
+
+    const result = calculateGratuity({
+      basicSalary,
+      completedYears
+    });
+
+    // Update DOM
+    if (resultAmount) resultAmount.textContent = formatINR(result.gratuityAmount);
+    if (resultExplanation) resultExplanation.textContent = result.explanation;
+    if (resultExempt) resultExempt.textContent = formatINR(result.taxExemptAmount);
+    if (resultTaxable) resultTaxable.textContent = formatINR(result.taxableAmount);
+
+    if (!result.eligible) {
+      if (resultAmount) resultAmount.classList.add('text-red-500');
+    } else {
+      if (resultAmount) resultAmount.classList.remove('text-red-500');
+    }
+  }
+
+  // Event Listeners
+  [basicSalaryInput, completedYearsInput].forEach(el => {
+    if (el) {
+      el.addEventListener('input', updateCalculations);
+      el.addEventListener('change', updateCalculations);
+    }
+  });
+
+  // Copy action
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      if (resultAmount && resultAmount.textContent) {
+        navigator.clipboard.writeText(resultAmount.textContent).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('border-vercel-blue');
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.classList.remove('border-vercel-blue');
+          }, 1500);
+        });
+      }
+    });
+  }
+
+  // Initial update
+  updateCalculations();
+</script>

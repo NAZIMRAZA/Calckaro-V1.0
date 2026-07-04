@@ -1,0 +1,172 @@
+---
+import Base from '../../layouts/Base.astro';
+import CalculatorShell from '../../components/CalculatorShell.astro';
+
+// Import all Hub A Calculator UI Components
+import NoticePeriodCalculator from '../../components/calculators/NoticePeriodCalculator.astro';
+import GstTdsCalculator from '../../components/calculators/GstTdsCalculator.astro';
+import SalaryCalculator from '../../components/calculators/SalaryCalculator.astro';
+import HraCalculator from '../../components/calculators/HraCalculator.astro';
+import TaxRegimeCalculator from '../../components/calculators/TaxRegimeCalculator.astro';
+import GratuityCalculator from '../../components/calculators/GratuityCalculator.astro';
+import EpfCalculator from '../../components/calculators/EpfCalculator.astro';
+import NoticePeriodSalaryCalculator from '../../components/calculators/NoticePeriodSalaryCalculator.astro';
+import AnnualTaxCalculator from '../../components/calculators/AnnualTaxCalculator.astro';
+
+import calculators from '../../data/calculators.json';
+
+export async function getStaticPaths() {
+  return calculators.map(calc => ({
+    params: { calculator: calc.slug },
+    props: { calc }
+  }));
+}
+
+const { calc } = Astro.props;
+const { slug, name, category, h1, metaDescription, faqs, relatedSlugs } = calc;
+
+// Mapping formulas, explanations, and instructions per calculator
+let formulaText = "";
+let formulaVariables: { name: string; description: string }[] = [];
+let steps: string[] = [];
+
+if (slug === 'notice-period-calculator') {
+  formulaText = "Buyout Cost = (Gross Salary / 30) * Days to Buy Out";
+  formulaVariables = [
+    { name: "Gross Salary", description: "Your monthly gross salary used to compute the daily pro-rata wage." },
+    { name: "Days to Buy Out", description: "The difference between your required notice period and the actual days served." }
+  ];
+  steps = [
+    "Enter your monthly gross salary.",
+    "Input the notice period required by your company (in days).",
+    "Input the notice period you plan to serve (in days).",
+    "Instantly view the net buyout amount you or the employer will need to pay."
+  ];
+} else if (slug === 'gst-tds-calculator') {
+  formulaText = "Net Payout = (Bill Amount * (1 + GST%)) - (Bill Amount * TDS%)";
+  formulaVariables = [
+    { name: "Bill Amount", description: "Basic contract or service fee before taxes." },
+    { name: "GST Component", description: "Tax charged on the service (usually 18% for freelance services)." },
+    { name: "TDS Component", description: "Tax withheld at source by client (10% under Sec 194J, 2% under Sec 194C)." }
+  ];
+  steps = [
+    "Enter the basic billing amount.",
+    "Select the applicable GST slab (default is 18% for IT/writing/services).",
+    "Select the TDS rate (10% for professional fees, 2% for contracts).",
+    "Instantly check the basic service fee, GST collected, TDS deducted, and your net payout."
+  ];
+} else if (slug === 'salary-calculator') {
+  formulaText = "Monthly In-hand = Monthly Gross Salary - Employee EPF - Professional Tax - Income Tax";
+  formulaVariables = [
+    { name: "Monthly Gross Salary", description: "Your basic salary + allowances before deductions." },
+    { name: "Employee EPF Contribution", description: "12% of basic salary deducted monthly for retirement savings." },
+    { name: "Professional Tax", description: "State government professional tax (up to ₹200-₹208/month)." },
+    { name: "Income Tax", description: "Monthly TDS deducted under New Tax Regime slabs." }
+  ];
+  steps = [
+    "Enter your annual Cost to Company (CTC).",
+    "Adjust Basic Salary percentage (standard is 50% of CTC).",
+    "Check the automatic deductions for EPF, Gratuity, and Professional Tax.",
+    "View your monthly take-home salary breakdown under the New Regime."
+  ];
+} else if (slug === 'hra-calculator') {
+  formulaText = "HRA Exempt = Minimum of (1. Actual HRA, 2. Rent - 10% Basic, 3. 40%/50% Basic)";
+  formulaVariables = [
+    { name: "Actual HRA Received", description: "The HRA allowance component from your salary slip." },
+    { name: "Basic Salary", description: "Your monthly basic salary." },
+    { name: "Rent Paid", description: "The actual monthly rent paid to your landlord." }
+  ];
+  steps = [
+    "Enter your monthly basic salary.",
+    "Enter your monthly HRA allowance.",
+    "Enter the actual rent you pay to your landlord.",
+    "Select your city type (Metro: Delhi/Mumbai/Kolkata/Chennai get 50%, non-metros get 40%)."
+  ];
+} else if (slug === 'old-vs-new-tax-regime-calculator') {
+  formulaText = "Tax Savings = Tax under Regime A - Tax under Regime B";
+  formulaVariables = [
+    { name: "Old Regime Slabs", description: "Tax computation using traditional deductions (80C, HRA, home loan)." },
+    { name: "New Regime Slabs", description: "Tax computation using lower tax rates but zero deductions (except ₹75,000 standard deduction)." }
+  ];
+  steps = [
+    "Enter your annual taxable salary income.",
+    "Specify your tax deductions (80C up to 1.5L, 80D up to 25k, etc.).",
+    "Compare the detailed slab calculations side by side.",
+    "Instantly see which regime saves you more money."
+  ];
+} else if (slug === 'gratuity-calculator') {
+  formulaText = "Gratuity = (Basic Salary + DA) * (15 / 26) * Completed Years of Service";
+  formulaVariables = [
+    { name: "Basic Salary + DA", description: "Your last drawn basic salary including dearness allowance (if applicable)." },
+    { name: "Completed Years of Service", description: "The total number of years you have continuously worked (must be at least 5 years)." }
+  ];
+  steps = [
+    "Enter your monthly last drawn basic salary.",
+    "Specify the number of completed years of service.",
+    "Check your total eligible gratuity amount (tax-free up to ₹25 Lakhs)."
+  ];
+} else if (slug === 'epf-calculator') {
+  formulaText = "EPF Maturity = Initial Balance + Monthly Contributions + Compound Interest (8.25%)";
+  formulaVariables = [
+    { name: "Employee Share", description: "12% of basic salary contributed towards retirement." },
+    { name: "Employer Share", description: "3.67% of basic salary contributed towards EPF." },
+    { name: "EPF Interest Rate", description: " EPFO rate of interest (compounded annually)." }
+  ];
+  steps = [
+    "Enter your current basic monthly salary.",
+    "Enter your existing EPF account balance.",
+    "Enter your tenure to retirement (in years).",
+    "View your total retirement corpus, contributions, and interest accumulated."
+  ];
+} else if (slug === 'notice-period-salary-calculator') {
+  formulaText = "Notice Payout = (Gross Salary / Days in Month) * (Days Served - Loss of Pay Leaves)";
+  formulaVariables = [
+    { name: "Gross Salary", description: "Your monthly gross salary." },
+    { name: "Days Served", description: "The actual number of days you worked during your notice period." },
+    { name: "Loss of Pay (LOP) Leaves", description: "Unapproved leaves taken which result in salary deduction." }
+  ];
+  steps = [
+    "Enter your monthly gross salary.",
+    "Enter the number of notice period days served.",
+    "Select the total days in the current month (28, 29, 30, or 31).",
+    "Add any LOP leaves to view your net pro-rata salary payout."
+  ];
+} else if (slug === 'annual-tax-calculator') {
+  formulaText = "Net Tax Payable = (Income Tax + 4% Cess) - TDS Deposited";
+  formulaVariables = [
+    { name: "Taxable Salary", description: "Your gross salary minus standard deduction." },
+    { name: "TDS Deposited", description: "Tax already deducted by your employer as shown in Form 16 / 26AS." }
+  ];
+  steps = [
+    "Enter your gross taxable income.",
+    "Select your preferred tax regime (Old vs New).",
+    "Enter the TDS amount already deducted by your company.",
+    "View whether you need to pay additional tax or qualify for a refund."
+  ];
+}
+---
+
+<Base title={calc.metaTitle} description={calc.metaDescription}>
+  <CalculatorShell
+    slug={slug}
+    name={name}
+    category={category}
+    h1={h1}
+    metaDescription={metaDescription}
+    faqs={faqs}
+    relatedSlugs={relatedSlugs}
+    formulaText={formulaText}
+    formulaVariables={formulaVariables}
+    steps={steps}
+  >
+    {slug === 'notice-period-calculator' && <NoticePeriodCalculator />}
+    {slug === 'gst-tds-calculator' && <GstTdsCalculator />}
+    {slug === 'salary-calculator' && <SalaryCalculator />}
+    {slug === 'hra-calculator' && <HraCalculator />}
+    {slug === 'old-vs-new-tax-regime-calculator' && <TaxRegimeCalculator />}
+    {slug === 'gratuity-calculator' && <GratuityCalculator />}
+    {slug === 'epf-calculator' && <EpfCalculator />}
+    {slug === 'notice-period-salary-calculator' && <NoticePeriodSalaryCalculator />}
+    {slug === 'annual-tax-calculator' && <AnnualTaxCalculator />}
+  </CalculatorShell>
+</Base>
