@@ -221,8 +221,8 @@ Use these core design tokens from `DESIGN.md`:
 *   `[x]` Git initialized, README.md pushed to remote
 *   `[x]` Install required skills and design system at project level
 *   `[x]` Create token optimization files (`AGENTS.md` and `Gemini.md`)
-*   `[ ]` Initialize the CalcKaro application structure (Astro configuration & files)
-*   `[ ]` Scaffold `Base.astro` — dark theme, Geist font, nav (search + categories), footer
+*   `[x]` Initialize the CalcKaro application structure (Astro configuration & files)
+*   `[x]` Scaffold `Base.astro` — dark theme, Geist font, nav (search + categories), footer
 *   `[ ]` Build `calculators.json` containing Phase 1 entries (10 calculators)
 *   `[ ]` Build `[calculator].astro` dynamic page template
 *   `[ ]` Build `InputField.astro` and `ResultDisplay.astro` reusable components
