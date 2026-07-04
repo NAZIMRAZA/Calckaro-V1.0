@@ -226,12 +226,14 @@ Use these core design tokens from `DESIGN.md`:
 *   `[x]` Build `calculators.json` containing Phase 1/Hub A entries (9 calculators)
 *   `[x]` Build `[calculator].astro` dynamic page template
 *   `[x]` Build `InputField.astro` and `ResultDisplay.astro` reusable components
-*   `[x]` Implement core calculation logic in `src/components/CalcLogic/`: `notice-period.ts`
-*   `[x]` Wire Phase 1/Hub A calculators end-to-end (`notice-period-calculator` active)
+*   `[x]` Implement core calculation logic in `src/components/CalcLogic/`: notice-period, gst-tds, salary, hra, tax-regime, gratuity, epf, notice-period-salary, annual-tax
+*   `[x]` Wire Phase 1/Hub A calculators end-to-end (all 9 calculators active inside `/finance/*`)
+*   `[x]` Scaffold Base.astro — dark theme, Geist font, nav (FAQ, Privacy, About, Terms, Contact), footer
+*   `[x]` Build static pages: FAQ, Privacy, About, Terms, Contact Us
+*   `[x]` Add FAQ JSON-LD structured data and WebApplication schemas to all pages
+*   `[x]` Add `RelatedCalcs.astro` internal linking
+*   `[x]` Add AdSense slots
 *   `[ ]` Build homepage — category grid + `SearchBar.tsx` island
-*   `[ ]` Add FAQ JSON-LD structured data to all pages
-*   `[ ]` Add `RelatedCalcs.astro` internal linking
-*   `[ ]` Add AdSense slots
 *   `[ ]` Run `seo-audit` skill on all Phase 1 pages
 *   `[ ]` Add Phase 2 calculators (India-specific depth)
 *   `[ ]` Deploy to Vercel
