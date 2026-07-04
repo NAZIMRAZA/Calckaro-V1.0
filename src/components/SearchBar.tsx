@@ -10,7 +10,7 @@ interface CalculatorItem {
   metaDescription: string;
 }
 
-export default function SearchBar() {
+export default function SearchBar({ variant = 'default' }: { variant?: 'default' | 'compact' }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<CalculatorItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -18,18 +18,6 @@ export default function SearchBar() {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Focus Search with Ctrl + K
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -90,7 +78,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div ref={containerRef} class="relative w-full max-w-md">
+    <div ref={containerRef} class={`relative w-full ${variant === 'compact' ? 'max-w-[160px] sm:max-w-[200px]' : 'max-w-md'}`}>
       <div class="relative">
         <input 
           ref={inputRef}
@@ -102,12 +90,11 @@ export default function SearchBar() {
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder="Search calculators (e.g. GST, Salary, HRA)..." 
-          class="w-full rounded-xs border border-vercel-gray-medium bg-vercel-gray-dark px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-ink-faint focus:border-vercel-blue"
+          placeholder={variant === 'compact' ? 'Search...' : 'Search calculators (e.g. GST, Salary, HRA)...'} 
+          class={`w-full rounded-xs border border-vercel-gray-medium bg-vercel-gray-dark text-white outline-none transition-all placeholder:text-ink-faint focus:border-vercel-blue ${
+            variant === 'compact' ? 'px-3 py-1.5 text-xs' : 'px-4 py-3 text-sm'
+          }`}
         />
-        <span class="absolute right-4 top-3.5 text-xs font-mono text-ink-faint select-none pointer-events-none">
-          Ctrl K
-        </span>
       </div>
 
       {/* Results Dropdown */}

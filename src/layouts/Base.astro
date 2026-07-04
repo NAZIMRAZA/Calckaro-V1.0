@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import SearchBar from '../components/SearchBar';
 
 interface Props {
   title?: string;
@@ -61,14 +62,7 @@ const {
 
         <!-- Right navigation / search placeholder -->
         <div class="flex items-center gap-3">
-          <div class="relative w-40 sm:w-48">
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              disabled
-              class="w-full rounded-xs border border-vercel-gray-medium bg-vercel-gray-dark px-3 py-1.5 text-xs text-ink-muted outline-none transition-all placeholder:text-ink-faint focus:border-vercel-blue"
-            />
-          </div>
+          <SearchBar client:load variant="compact" />
           
           <!-- Theme Toggle -->
           <button id="theme-toggle" class="p-1.5 rounded-xs border border-vercel-gray-medium bg-vercel-gray-dark text-ink-muted hover:text-white transition-colors cursor-pointer" aria-label="Toggle theme">
