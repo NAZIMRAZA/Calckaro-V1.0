@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base>
+  <div class="py-12 sm:py-16 text-center">
+    <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl font-sans">
+      India's Calculator Hub
+    </h1>
+    <p class="mx-auto mt-4 max-w-2xl text-lg text-ink-muted">
+      Fast, free, and built for Bharat. Access fully localized tools for salary, taxation, education, and finance.
+    </p>
+    
+    <div class="mt-8 flex justify-center">
+      <div class="relative w-full max-w-md">
+        <input 
+          type="text" 
+          placeholder="Search 20+ calculators (e.g. GST, Salary, HRA)..." 
+          disabled
+          class="w-full rounded-md border border-vercel-gray-medium bg-vercel-gray-dark px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-ink-faint focus:border-vercel-blue"
+        />
+        <span class="absolute right-4 top-3.5 text-xs font-mono text-ink-faint">Ctrl K</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories Grid -->
+  <div class="mt-16">
+    <h2 class="text-2xl font-bold tracking-tight text-white mb-6">Explore Categories</h2>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      
+      <!-- Finance Hub -->
+      <a href="/category/finance" class="group block rounded-md border border-vercel-gray-medium bg-vercel-gray-dark p-6 transition-all hover:border-vercel-blue hover:bg-vercel-gray-medium">
+        <div class="text-xl font-bold text-white group-hover:text-vercel-blue transition-colors mb-2">Finance Hub &rarr;</div>
+        <p class="text-xs text-ink-muted">In-hand Salary, HRA exemption, Gratuity, EPF, and tax liability estimators.</p>
+      </a>
+
+      <!-- Student Hub -->
+      <a href="/category/student" class="group block rounded-md border border-vercel-gray-medium bg-vercel-gray-dark p-6 transition-all hover:border-vercel-blue hover:bg-vercel-gray-medium">
+        <div class="text-xl font-bold text-white group-hover:text-vercel-blue transition-colors mb-2">Student / Academic &rarr;</div>
+        <p class="text-xs text-ink-muted">VTU SGPA/CGPA conversion, internal marks checkers, and age calculators.</p>
+      </a>
+
+      <!-- Crypto Hub -->
+      <a href="/category/crypto" class="group block rounded-md border border-vercel-gray-medium bg-vercel-gray-dark p-6 transition-all hover:border-vercel-blue hover:bg-vercel-gray-medium">
+        <div class="text-xl font-bold text-white group-hover:text-vercel-blue transition-colors mb-2">Crypto Toolkit &rarr;</div>
+        <p class="text-xs text-ink-muted">P2P margin calculators, crypto capital gains tax estimators, and USDT rates.</p>
+      </a>
+
+      <!-- Investment & Loans -->
+      <a href="/category/investment" class="group block rounded-md border border-vercel-gray-medium bg-vercel-gray-dark p-6 transition-all hover:border-vercel-blue hover:bg-vercel-gray-medium">
+        <div class="text-xl font-bold text-white group-hover:text-vercel-blue transition-colors mb-2">Loans & Investing &rarr;</div>
+        <p class="text-xs text-ink-muted">SIP, SWP, Lumpsum growth calculators, EMI schedules, and FD maturity.</p>
+      </a>
+
+    </div>
+  </div>
+</Base>
