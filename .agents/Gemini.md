@@ -233,7 +233,7 @@ Use these core design tokens from `DESIGN.md`:
 *   `[x]` Add FAQ JSON-LD structured data and WebApplication schemas to all pages
 *   `[x]` Add `RelatedCalcs.astro` internal linking
 *   `[x]` Add AdSense slots
-*   `[ ]` Build homepage — category grid + `SearchBar.tsx` island
+*   `[x]` Build homepage — category grid + `SearchBar.tsx` island
 *   `[ ]` Run `seo-audit` skill on all Phase 1 pages
 *   `[ ]` Add Phase 2 calculators (India-specific depth)
 *   `[ ]` Deploy to Vercel
